@@ -1,0 +1,21 @@
+overlay: 1.0.0
+info:
+  title: Corrections to the generated Software Heritage description
+  version: 0.1.0
+
+actions:
+  # Upstream documents both endpoints with a single field literally named and
+  # typed "???". They return JSON-LD/CodeMeta objects whose keys are IRIs and
+  # so cannot be enumerated.
+  - target: $.components.schemas.IntrinsicMetadataOrigin.properties
+    remove: true
+  - target: $.components.schemas.IntrinsicMetadataOrigin
+    update:
+      description: Intrinsic metadata for the origin, as a JSON-LD/CodeMeta object.
+      additionalProperties: true
+  - target: $.components.schemas.ExtrinsicMetadataOrigin.properties
+    remove: true
+  - target: $.components.schemas.ExtrinsicMetadataOrigin
+    update:
+      description: Extrinsic metadata for the origin, as a JSON-LD/CodeMeta object.
+      additionalProperties: true

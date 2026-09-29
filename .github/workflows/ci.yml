@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions: {}
+
+jobs:
+  spec:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build the generator image
+        run: make image
+
+      - name: Run the tests
+        run: make test
+
+      - name: Regenerate the description
+        run: make spec
+
+      - name: Validate the description
+        run: make validate
+
+      - name: Fail if the committed description is stale
+        run: git diff --exit-code openapi.gen.yaml openapi.yaml

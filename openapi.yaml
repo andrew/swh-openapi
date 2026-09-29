@@ -1,0 +1,3877 @@
+openapi: 3.1.0
+info:
+  title: Software Heritage Web API
+  version: 2026.09.29
+  x-swh-web-version: 0.17.12
+  description: Unofficial OpenAPI description of the Software Heritage Web API, generated from swh-web's
+    own endpoint documentation.
+  license:
+    name: CC0-1.0
+servers:
+- url: https://archive.softwareheritage.org
+components:
+  schemas:
+    AddForgeRequestCreatePost:
+      type: object
+      properties:
+        forge_type:
+          type: string
+          description: the type of forge
+        forge_url:
+          type: string
+          description: the base URL of the forge
+        forge_contact_email:
+          type: string
+          description: email of an administrator of the forge to contact
+        forge_contact_name:
+          type: string
+          description: the name of the administrator
+        forge_contact_comment:
+          type: string
+          description: to explain how Software Heritage can verify forge administrator info are valid
+    Content:
+      type: object
+      properties:
+        checksums:
+          type: object
+          description: object holding the computed checksum values for the requested content
+        data_url:
+          type: string
+          description: link to /api/1/content/raw/ for downloading the content raw bytes
+        filetype_url:
+          type: string
+          description: link to /api/1/content/filetype/ for getting information about the content MIME
+            type
+        language_url:
+          type: string
+          description: link to /api/1/content/language/ for getting information about the programming
+            language used in the content
+        length:
+          type: integer
+          description: length of the content in bytes
+        license_url:
+          type: string
+          description: link to /api/1/content/license/ for getting information about the license of the
+            content
+        swhid:
+          type: string
+          description: the SoftWare Hash IDentifier of the content
+    ContentFiletype:
+      type: object
+      properties:
+        content_url:
+          type: object
+          description: link to /api/1/content/ for getting information about the content
+        encoding:
+          type: string
+          description: the detected content encoding
+        id:
+          type: string
+          description: the sha1 identifier of the content
+        mimetype:
+          type: string
+          description: the detected MIME type of the content
+        tool:
+          type: object
+          description: information about the tool used to detect the content filetype
+    ContentLanguage:
+      type: object
+      properties:
+        content_url:
+          type: object
+          description: link to /api/1/content/ for getting information about the content
+        id:
+          type: string
+          description: the sha1 identifier of the content
+        lang:
+          type: string
+          description: the detected programming language if any
+        tool:
+          type: object
+          description: information about the tool used to detect the programming language
+    ContentLicense:
+      type: object
+      properties:
+        content_url:
+          type: object
+          description: link to /api/1/content/ for getting information about the content
+        id:
+          type: string
+          description: the sha1 identifier of the content
+        licenses:
+          type: array
+          items: {}
+          description: array of strings containing the detected license names
+        tool:
+          type: object
+          description: information about the tool used to detect the license
+    Directory:
+      type: object
+      properties:
+        checksums:
+          type: object
+          description: object holding the computed checksum values for a directory entry (only for file
+            entries)
+        dir_id:
+          type: string
+          description: sha1_git identifier of the requested directory
+        length:
+          type: integer
+          description: length of a directory entry in bytes (only for file entries) for getting information
+            about the content MIME type
+        name:
+          type: string
+          description: the directory entry name
+        perms:
+          type: integer
+          description: permissions for the directory entry
+        target:
+          type: string
+          description: sha1_git identifier of the directory entry
+        target_url:
+          type: string
+          description: link to /api/1/content/ or /api/1/directory/ depending on the directory entry type
+        type:
+          type: string
+          description: the type of the directory entry, can be either dir, file or rev
+    ExtidTarget:
+      type: object
+      properties:
+        extid_type:
+          type: string
+          description: the type of the external identifier
+        extid:
+          type: string
+          description: the value of the external identifier
+        target:
+          type: string
+          description: the SWHID of the archived object targeted by the external identifier
+        target_url:
+          type: string
+          description: URL to browse the targeted archived object
+        extid_version:
+          type: integer
+          description: the version of the external identifier
+    ExtrinsicMetadataOrigin:
+      type: object
+      description: Extrinsic metadata for the origin, as a JSON-LD/CodeMeta object.
+      additionalProperties: true
+    IntrinsicMetadataOrigin:
+      type: object
+      description: Intrinsic metadata for the origin, as a JSON-LD/CodeMeta object.
+      additionalProperties: true
+    KnownPost:
+      type: object
+      properties:
+        <swhid>:
+          type: object
+          description: 'an object whose keys are input SWHIDs and values objects with the following keys:
+            * known (bool): whether the object was found'
+    OriginGet:
+      type: object
+      properties:
+        origin_visits_url:
+          type: string
+          description: link to in order to get information about the visits for that origin
+        url:
+          type: string
+          description: the origin canonical url
+        metadata_authorities_url:
+          type: string
+          description: link to /api/1/raw-extrinsic-metadata/swhid/authorities/ to get the list of metadata
+            authorities providing extrinsic metadata on this origin (and, indirectly, to the origin's
+            extrinsic metadata itself)
+        visit_types:
+          type: array
+          items: {}
+          description: set of visit types for that origin
+    OriginMetadataSearch:
+      type: object
+      properties:
+        origin_visits_url:
+          type: string
+          description: link to in order to get information about the visits for that origin
+        url:
+          type: string
+          description: the origin canonical url
+        metadata_authorities_url:
+          type: string
+          description: link to /api/1/raw-extrinsic-metadata/swhid/authorities/ to get the list of metadata
+            authorities providing extrinsic metadata on this origin (and, indirectly, to the origin's
+            extrinsic metadata itself)
+    OriginSave:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: the save request identifier
+        request_url:
+          type: string
+          description: Web API URL to follow up on that request
+        origin_url:
+          type: string
+          description: the url of the origin to save
+        visit_type:
+          type: string
+          description: the type of visit to perform
+        save_request_date:
+          type: string
+          description: the date (in iso format) the save request was issued
+        save_request_status:
+          type: string
+          description: the status of the save request, either accepted, rejected or pending
+        save_task_status:
+          type: string
+          description: the status of the origin saving task, either not created, pending, scheduled, running,
+            succeeded or failed
+        visit_date:
+          type: string
+          description: the date (in iso format) of the visit if a visit occurred, null otherwise.
+        visit_status:
+          type: string
+          description: the status of the visit, either full, partial, not_found or failed if a visit occurred,
+            null otherwise.
+        note:
+          type: string
+          description: optional note giving details about the save request, for instance why it has been
+            rejected
+        snapshot_swhid:
+          type: string
+          description: SWHID of snapshot associated to the visit (null if it is missing or unknown)
+        snapshot_url:
+          type: string
+          description: Web API URL to retrieve snapshot data
+        from_webhook:
+          type: boolean
+          description: indicates if the save request was created from a popular forge webhook receiver
+            (see /api/1/origin/save/webhook/github/ for instance)
+        webhook_origin:
+          type: string
+          description: indicates which forge type sent the webhook, currently the supported types are:bitbucket,
+            forgejo, gitea, github, gitlab, gogs, and sourceforge
+    OriginSaveBulkPost:
+      type: object
+      properties:
+        status:
+          type: string
+          description: either accepted or rejected
+        reason:
+          type: string
+          description: details about why a request got rejected
+        request_id:
+          type: string
+          description: request identifier (only when it its accepted)
+        rejected_origins:
+          type: array
+          items: {}
+          description: list of rejected origins and details about the reasons (only when the request is
+            rejected)
+    OriginSaveBulkRequest:
+      type: object
+      properties:
+        origin_url:
+          type: string
+          description: URL of submitted origin
+        visit_type:
+          type: string
+          description: visit type for the origin
+        status:
+          type: string
+          description: submitted origin status, either pending, accepted or rejected
+        last_scheduling_date:
+          type: string
+          format: date-time
+          description: ISO8601/RFC3339 representation of the last date (in UTC) when the origin was scheduled
+            for loading into the archive, null if the origin got rejected
+        last_visit_date:
+          type: string
+          format: date-time
+          description: ISO8601/RFC3339 representation of the last date (in UTC) when the origin was visited
+            by Software Heritage, null if the origin got rejected or was not visited yet
+        last_visit_status:
+          type: string
+          description: last visit status for the origin, either successful or failed, null if the origin
+            got rejected or was not visited yet
+        last_snapshot_swhid:
+          type: string
+          description: last produced snapshot SWHID associated to the visit, null if the origin got rejected
+            or was not visited yet
+        rejection_reason:
+          type: string
+          description: if the origin got rejected gives more details about it
+        browse_url:
+          type: string
+          description: URL to browse the submitted origin if it got accepted and loaded into the archive,
+            null if the origin got rejected or was not visited yet
+    OriginSaveBulkRequests:
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: UUID identifier of the request
+        request_date:
+          type: string
+          format: date-time
+          description: the date the request was submitted
+        request_info_url:
+          type: string
+          description: URL to get detailed info about the request
+    OriginSaveWebhookBitbucketPost:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: the save request identifier
+        request_url:
+          type: string
+          description: Web API URL to follow up on that request
+        origin_url:
+          type: string
+          description: the url of the origin to save
+        visit_type:
+          type: string
+          description: the type of visit to perform
+        save_request_date:
+          type: string
+          description: the date (in iso format) the save request was issued
+        save_request_status:
+          type: string
+          description: the status of the save request, either accepted, rejected or pending
+        save_task_status:
+          type: string
+          description: the status of the origin saving task, either not created, pending, scheduled, running,
+            succeeded or failed
+        save_task_next_run:
+          type: string
+          description: the date and time from which the request is executed
+    OriginSearch:
+      type: object
+      properties:
+        origin_visits_url:
+          type: string
+          description: link to in order to get information about the visits for that origin
+        url:
+          type: string
+          description: the origin canonical url
+        metadata_authorities_url:
+          type: string
+          description: link to /api/1/raw-extrinsic-metadata/swhid/authorities/ to get the list of metadata
+            authorities providing extrinsic metadata on this origin (and, indirectly, to the origin's
+            extrinsic metadata itself)
+        has_visits:
+          type: boolean
+          description: indicates if Software Heritage made at least one full visit of the origin
+        nb_visits:
+          type: integer
+          description: the total number of visits for the origin
+        last_visit_date:
+          type: string
+          description: ISO8601/RFC3339 representation of the last visit date (in UTC)
+        last_eventful_visit_date:
+          type: string
+          description: ISO8601/RFC3339 representation of the last eventful_visit date (in UTC)
+        snapshot_id:
+          type: string
+          description: identifier of the last snapshot for the origin
+    OriginVisitLatest:
+      type: object
+      properties:
+        date:
+          type: string
+          description: ISO8601/RFC3339 representation of the visit date (in UTC)
+        origin:
+          type: string
+          description: the origin canonical url
+        origin_url:
+          type: string
+          description: link to get information about the origin
+        snapshot:
+          type: string
+          description: the snapshot identifier of the visit (may be null if status is not full).
+        snapshot_url:
+          type: string
+          description: link to /api/1/snapshot/ in order to get information about the snapshot of the
+            visit (may be null if status is not full).
+        status:
+          type: string
+          description: status of the visit (either full, partial or ongoing)
+        type:
+          type: string
+          description: visit type for the origin
+        visit:
+          type: integer
+          description: the unique identifier of the visit
+    OriginVisits:
+      type: object
+      properties:
+        date:
+          type: string
+          description: ISO8601/RFC3339 representation of the visit date (in UTC)
+        origin:
+          type: string
+          description: the origin canonical url
+        origin_url:
+          type: string
+          description: link to get information about the origin
+        snapshot:
+          type: string
+          description: the snapshot identifier of the visit (may be null if status is not full).
+        snapshot_url:
+          type: string
+          description: link to /api/1/snapshot/ in order to get information about the snapshot of the
+            visit (may be null if status is not full).
+        status:
+          type: string
+          description: status of the visit (either full, partial or ongoing)
+        type:
+          type: string
+          description: visit type for the origin
+        visit:
+          type: integer
+          description: the unique identifier of the visit
+        id:
+          type: integer
+          description: the unique identifier of the origin
+        origin_visit_url:
+          type: string
+          description: link to /api/1/origin/visit/ in order to get information about the visit
+    RawExtrinsicMetadataOriginAuthorities:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Type of authority (deposit_client, forge, registry)
+        url:
+          type: string
+          description: Unique IRI identifying the authority
+        metadata_list_url:
+          type: object
+          description: URL to get the list of metadata objects on the given object from this authority
+    RawExtrinsicMetadataSwhid:
+      type: object
+      properties:
+        target:
+          type: string
+          description: SWHID of the object described by this metadata (absent when target is not a core
+            SWHID (ie. it does not have type cnt/dir/rev/rel/snp)
+        discovery_date:
+          type: string
+          description: ISO8601/RFC3339 timestamp of the moment this metadata was collected.
+        authority:
+          type: object
+          description: authority this metadata is coming from
+        fetcher:
+          type: object
+          description: tool used to fetch the metadata
+        format:
+          type: string
+          description: short identifier of the format of the metadata
+        metadata_url:
+          type: string
+          description: link to download the metadata "blob" itself
+        origin:
+          type: string
+          description: URL of the origin in which context the metadata is valid, if any
+        visit:
+          type: integer
+          description: identifier of the visit in which context the metadata is valid, if any
+        snapshot:
+          type: string
+          description: SWHID of the snapshot in which context the metadata is valid, if any
+        release:
+          type: string
+          description: SWHID of the release in which context the metadata is valid, if any
+        revision:
+          type: string
+          description: SWHID of the revision in which context the metadata is valid, if any
+        path:
+          type: string
+          description: SWHID of the path in which context is valid if any, relative to a release or revision
+            as anchor
+        directory:
+          type: string
+          description: SWHID of the directory in which context the metadata is valid, if any
+    RawIntrinsicMetadataCitationOrigin:
+      type: object
+      properties:
+        format:
+          type: string
+          description: citation format (bibtex, csl)
+        content:
+          type: string
+          description: formatted string representing the software citation content in the expected format
+        source_swhid:
+          type: string
+          description: qualified SWHID for citation metadata source file
+        source_url:
+          type: string
+          description: link to raw bytes of citation metadata source file
+    Release:
+      type: object
+      properties:
+        author:
+          type: object
+          description: information about the author of the release
+        date:
+          type: string
+          description: RFC3339 representation of the release date
+        id:
+          type: string
+          description: the release unique identifier
+        message:
+          type: string
+          description: the message associated to the release
+        name:
+          type: string
+          description: the name of the release
+        target:
+          type: string
+          description: the target identifier of the release
+        target_type:
+          type: string
+          description: the type of the target, can be either release, revision, content, directory
+        target_url:
+          type: string
+          description: a link to the adequate api url based on the target type
+    Resolve:
+      type: object
+      properties:
+        browse_url:
+          type: string
+          description: the url for browsing the pointed object
+        metadata:
+          type: object
+          description: object holding optional parts of the SWHID
+        namespace:
+          type: string
+          description: the SWHID namespace
+        object_id:
+          type: string
+          description: the hash identifier of the pointed object
+        object_type:
+          type: string
+          description: the type of the pointed object
+        scheme_version:
+          type: integer
+          description: the scheme version of the SWHID
+    Revision:
+      type: object
+      properties:
+        author:
+          type: object
+          description: information about the author of the revision
+        committer:
+          type: object
+          description: information about the committer of the revision
+        committer_date:
+          type: string
+          description: RFC3339 representation of the commit date
+        date:
+          type: string
+          description: RFC3339 representation of the revision date
+        directory:
+          type: string
+          description: the unique identifier that revision points to
+        directory_url:
+          type: string
+          description: link to /api/1/directory/ to get information about the directory associated to
+            the revision
+        id:
+          type: string
+          description: the revision unique identifier
+        merge:
+          type: boolean
+          description: whether or not the revision corresponds to a merge commit
+        message:
+          type: string
+          description: the message associated to the revision
+        parents:
+          type: array
+          items: {}
+          description: the parents of the revision, i.e. the previous revisions that head directly to
+            it, each entry of that array contains an unique parent revision identifier but also a link
+            to /api/1/revision/ to get more information about it
+        type:
+          type: string
+          description: the type of the revision
+    RevisionDirectory:
+      type: object
+      properties:
+        content:
+          type: array
+          items: {}
+          description: directory entries as returned by /api/1/directory/
+        path:
+          type: string
+          description: path of directory from the revision root one
+        revision:
+          type: string
+          description: the unique revision identifier
+        type:
+          type: string
+          description: the type of the directory
+    RevisionVulnerabilities:
+      type: object
+      properties:
+        vulnerability:
+          type: object
+          properties:
+            ids:
+              type: array
+              items: {}
+              description: array of strings, each of which is an identifier of the vulnerability
+            raw_report:
+              type: array
+              items: {}
+              description: the raw report in OSV format (excluded without ?with_raw_report=yes) See https://ossf.github.io/osv-schema/
+                for details
+        tool:
+          type: object
+          properties:
+            name:
+              type: string
+              description: name of the tool used to identify the revision is vulnerable to this vulnerability
+            variant:
+              type: string
+              description: optional human-readable description of the tool's configuration
+        source:
+          type: object
+          properties:
+            name:
+              type: string
+              description: name of the database the vulnerability report comes from
+            version:
+              type: string
+              description: optional date of the database capture
+    Snapshot:
+      type: object
+      properties:
+        branches:
+          type: object
+          description: object containing all branches associated to the snapshot,for each of them the
+            associated target type and id are given but also a link to get information about that target
+        id:
+          type: string
+          description: the unique identifier of the snapshot
+    StatCounters:
+      type: object
+      properties:
+        content:
+          type: integer
+          description: current number of content objects (aka files) in the archive
+        directory:
+          type: integer
+          description: current number of directory objects in the archive
+        origin:
+          type: integer
+          description: current number of software origins (an origin is a "place" where code source can
+            be found, e.g. a git repository, a tarball, ...) in the archive
+        origin_visit:
+          type: integer
+          description: current number of visits on software origins to fill the archive
+        person:
+          type: integer
+          description: current number of persons (code source authors or committers) in the archive
+        release:
+          type: integer
+          description: current number of releases objects in the archive
+        revision:
+          type: integer
+          description: current number of revision objects (aka commits) in the archive
+        skipped_content:
+          type: integer
+          description: current number of content objects (aka files) which were not inserted in the archive
+        snapshot:
+          type: integer
+          description: current number of snapshot objects (aka set of named branches) in the archive
+    VaultFlat:
+      type: object
+      properties:
+        fetch_url:
+          type: string
+          description: the url from which to download the archive once it has been cooked (see /api/1/vault/flat/raw/)
+        progress_message:
+          type: string
+          description: message describing the cooking task progress
+        id:
+          type: integer
+          description: the cooking task id
+        status:
+          type: string
+          description: the cooking task status (either new, pending, done or failed)
+        swhid:
+          type: string
+          description: the identifier of the object to cook
+    VaultGitBare:
+      type: object
+      properties:
+        fetch_url:
+          type: string
+          description: the url from which to download the archive once it has been cooked (see /api/1/vault/git-bare/raw/)
+        progress_message:
+          type: string
+          description: message describing the cooking task progress
+        id:
+          type: integer
+          description: the cooking task id
+        status:
+          type: string
+          description: the cooking task status (new/pending/done/failed)
+        swhid:
+          type: string
+          description: the identifier of the object to cook
+    VaultGitfast:
+      type: object
+      properties:
+        fetch_url:
+          type: string
+          description: the url from which to download the archive once it has been cooked (see /api/1/vault/gitfast/raw/)
+        progress_message:
+          type: string
+          description: message describing the cooking task progress
+        id:
+          type: integer
+          description: the cooking task id
+        status:
+          type: string
+          description: the cooking task status (new/pending/done/failed)
+        swhid:
+          type: string
+          description: the identifier of the object to cook
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: OpenID Connect bearer token, obtained by exchanging an offline token at the Software
+        Heritage Keycloak realm. Raises the rate limit; anonymous access is allowed.
+security:
+- bearerAuth: []
+- {}
+paths:
+  /api/1/add-forge/request/create/:
+    post:
+      operationId: api-1-add-forge-request-create
+      summary: Create a new request to add a forge to the list of those crawled regularly by Software
+        Heritage
+      description: Create a new request to add a forge to the list of those crawled regularly by Software
+        Heritage. That endpoint is not publicly available and requires authentication in order to be able
+        to request it.
+      tags:
+      - Request archival
+      parameters:
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '201':
+          description: request successfully created
+        '400':
+          description: missing or invalid field values
+        '403':
+          description: user not authenticated
+        '200':
+          description: no error
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+      x-swh-doc-route: /api/1/add-forge/request/create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddForgeRequestCreatePost'
+          application/yaml:
+            schema:
+              $ref: '#/components/schemas/AddForgeRequestCreatePost'
+  /api/1/add-forge/request/list/:
+    get:
+      operationId: api-1-add-forge-request-list
+      summary: List add forge requests submitted by users
+      description: List add forge requests submitted by users.
+      tags:
+      - Request archival
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: optional page number
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: optional number of elements per page (bounded to 1000)
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: always
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+            Link:
+              schema:
+                type: string
+              description: indicates that a subsequent result page is available and contains the url pointing
+                to it
+      x-swh-doc-route: /api/1/add-forge/request/list
+  /api/1/add-forge/request/{id}/get/:
+    get:
+      operationId: api-1-add-forge-request-get
+      summary: Return all details about an add-forge request
+      description: Return all details about an add-forge request.
+      tags:
+      - Request archival
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9]+'
+        description: add-forge request identifier
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: request details successfully returned
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: request identifier does not exist
+      x-swh-doc-route: /api/1/add-forge/request/get
+  /api/1/content/{q}/:
+    get:
+      operationId: api-1-content
+      summary: Get information about a content (aka a "blob") object
+      description: Get information about a content (aka a "blob") object. In the archive, a content object
+        is identified based on checksum values computed using various hashing algorithms.
+      tags:
+      - Archive
+      parameters:
+      - name: q
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-z_:]*[0-9a-f]+'
+        example: sha1_git:fe95a46679d128ff167b7c55df5d02356c5a1ae1
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Content'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/Content'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid hash_type or hash has been provided
+        '404':
+          description: requested content cannot be found in the archive
+      x-swh-doc-route: /api/1/content/
+  /api/1/content/{q}/filetype/:
+    get:
+      operationId: api-1-content-filetype
+      summary: Get information about the detected MIME type of a content object
+      description: Get information about the detected MIME type of a content object.
+      tags:
+      - Metadata
+      parameters:
+      - name: q
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-z_:]*[0-9a-f]+'
+        example: sha1:dc2830a9e72f23c1dfebef4413003221baa5fb62
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentFiletype'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/ContentFiletype'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid hash_type or hash has been provided
+        '404':
+          description: requested content cannot be found in the archive
+      x-swh-doc-route: /api/1/content/filetype/
+  /api/1/content/{q}/language/:
+    get:
+      operationId: api-1-content-language
+      summary: Get information about the programming language used in a content object
+      description: 'Get information about the programming language used in a content object. Note: this
+        endpoint currently returns no data.'
+      tags:
+      - Metadata
+      parameters:
+      - name: q
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-z_:]*[0-9a-f]+'
+        example: sha1:dc2830a9e72f23c1dfebef4413003221baa5fb62
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentLanguage'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/ContentLanguage'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid hash_type or hash has been provided
+        '404':
+          description: requested content cannot be found in the archive
+      x-swh-doc-route: /api/1/content/language/
+  /api/1/content/{q}/license/:
+    get:
+      operationId: api-1-content-license
+      summary: Get information about the license of a content object
+      description: Get information about the license of a content object.
+      tags:
+      - Metadata
+      parameters:
+      - name: q
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-z_:]*[0-9a-f]+'
+        example: sha1:dc2830a9e72f23c1dfebef4413003221baa5fb62
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentLicense'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/ContentLicense'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid hash_type or hash has been provided
+        '404':
+          description: requested content cannot be found in the archive
+      x-swh-doc-route: /api/1/content/license/
+  /api/1/content/{q}/raw/:
+    get:
+      operationId: api-1-content-raw
+      summary: Get the raw content of a content object (aka a "blob"), as a byte sequence
+      description: Get the raw content of a content object (aka a "blob"), as a byte sequence.
+      tags:
+      - Archive
+      parameters:
+      - name: q
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-z_:]*[0-9a-f]+'
+        example: sha1:dc2830a9e72f23c1dfebef4413003221baa5fb62
+      - name: filename
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: no error
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: application/octet-stream
+        '400':
+          description: an invalid hash_type or hash has been provided
+        '404':
+          description: requested content cannot be found in the archive
+      x-swh-doc-route: /api/1/content/raw/
+  /api/1/directory/{sha1_git}/:
+    get:
+      operationId: api-1-directory-sha1-git
+      summary: Get information about directory objects
+      description: Get information about directory objects. Directories are identified by sha1 checksums,
+        compatible with Git directory identifiers. See swh.model.git_objects.directory_git_object in our
+        data model module for details about how they are computed. When given only a directory identifier,
+        this endpoint returns information about the directory itself, returning its content (usually a
+        list of directory entries). When given a directory identifier and a path, this endpoint returns
+        information about the directory entry pointed by the relative path, starting path resolution from
+        the given directory.
+      tags:
+      - Archive
+      parameters:
+      - name: sha1_git
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-f]+'
+        description: hexadecimal representation of the directory sha1_git identifier
+        example: 977fc4b98c0e85816348cebd3b12026407c368b6
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Directory'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Directory'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid hash_type or hash has been provided
+        '404':
+          description: requested directory cannot be found in the archive
+      x-swh-doc-route: /api/1/directory/
+  /api/1/directory/{sha1_git}/{path}/:
+    get:
+      operationId: api-1-directory-sha1-git-path
+      summary: Get information about directory objects
+      description: Get information about directory objects. Directories are identified by sha1 checksums,
+        compatible with Git directory identifiers. See swh.model.git_objects.directory_git_object in our
+        data model module for details about how they are computed. When given only a directory identifier,
+        this endpoint returns information about the directory itself, returning its content (usually a
+        list of directory entries). When given a directory identifier and a path, this endpoint returns
+        information about the directory entry pointed by the relative path, starting path resolution from
+        the given directory.
+      tags:
+      - Archive
+      parameters:
+      - name: sha1_git
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-f]+'
+        description: hexadecimal representation of the directory sha1_git identifier
+      - name: path
+        in: path
+        required: true
+        schema:
+          type: string
+        description: optional parameter to get information about the directory entry pointed by that relative
+          path
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Directory'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Directory'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid hash_type or hash has been provided
+        '404':
+          description: requested directory cannot be found in the archive
+      x-swh-doc-route: /api/1/directory/
+  /api/1/extid/target/{swhid}/:
+    get:
+      operationId: api-1-extid-target
+      summary: Get information about external identifiers targeting an archived object
+      description: Get information about external identifiers targeting an archived object. An external
+        identifier is used by a system that does not fit the Software Heritage data model.
+      tags:
+      - External IDentifiers
+      parameters:
+      - name: swhid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: a SWHID to check if external identifiers target it
+      - name: extid_type
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: extid_version
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: extid_format
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - hex
+          - base64url
+          - raw
+        example: raw
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExtidTarget'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExtidTarget'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: provided parameters are invalid
+        '404':
+          description: external identifier targeting SWHID cannot be found
+      x-swh-doc-route: /api/1/extid/target/
+  /api/1/extid/{extid_type}/{extid_format}:{extid}/:
+    get:
+      operationId: api-1-extid
+      summary: Get information about an external identifier
+      description: 'Get information about an external identifier. An external identifier is used by a
+        system that does not fit the Software Heritage data model. As an external identifier is stored
+        in binary into the archive database, the format used to decode its ASCII representation must be
+        explicitly specified. The available formats are the following: * base64url: the external identifier
+        is encoded to base64url. * hex: the external identifier is a checksum in hexadecimal representation
+        * raw: the external identifier is an ASCII string The types of external identifier that can be
+        requested are given below. VCS related: * bzr-nodeid: Revision ASCII identifier of a Bazaar repository,
+        to get such identifiers use the following command in your Bazaar repository: bzr log --show-ids.
+        * hg-nodeid: Node hash identifier for the revision of a Mercurial repository, to get such identifier
+        execute the following command in your Mercurial repository: hg id -r <rev_num> --template ''{node}''.
+        Guix and Nix related (must be queried with the extid_version query parameter set to 1 to ensure
+        correctness): * nar-sha256: sha256 checksum of a Nix Archive (NAR), used to deterministically
+        identifies the contents of a source tree (corresponds to *recursive* hash mode used by Guix and
+        Nix) * checksum-sha256: sha256 checksum of a file, typically a tarball (corresponds to *flat*
+        hash mode used by Guix and Nix) * checksum-sha512: sha512 checksum of a file, typically a tarball
+        (corresponds to *flat* hash mode used by Guix and Nix)'
+      tags:
+      - External IDentifiers
+      parameters:
+      - name: extid_type
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the type of external identifier
+        example: checksum-sha512
+      - name: extid_format
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the format used to encode the extid to an ASCII string, either base64url, hex or
+          raw
+        example: base64url
+      - name: extid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the external identifier value
+        example: AL5bxZ-gStT5UpzSc1dN-XVxxWN9FHtvBlZoFeFFMowwgMKWq9GLZHV8DWX-g7ugiKxlKa2ph2oTQCqvhixDQw/
+      - name: extid_version
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: optional version number of external identifier type
+        example: '1'
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtidTarget'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/ExtidTarget'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '404':
+          description: requested external identifier cannot be found
+      x-swh-doc-route: /api/1/extid/
+  /api/1/extrinsic-metadata/origin/:
+    get:
+      operationId: api-origin-extrinsic-metadata
+      summary: Get extrinsic metadata of a software origin (as a JSON-LD/CodeMeta dictionary)
+      description: Get extrinsic metadata of a software origin (as a JSON-LD/CodeMeta dictionary).
+      tags:
+      - Metadata
+      parameters:
+      - name: origin_url
+        in: query
+        required: true
+        schema:
+          type: string
+        example: https://github.com/node-red/node-red-nodegen
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExtrinsicMetadataOrigin'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExtrinsicMetadataOrigin'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '404':
+          description: requested origin cannot be found in the archive
+      x-swh-doc-route: /api/1/extrinsic-metadata/origin/
+  /api/1/graph/:
+    get:
+      operationId: api-1-graph-doc
+      summary: Provide fast access to the graph representation of the Software Heritage archive
+      description: Provide fast access to the graph representation of the Software Heritage archive. That
+        endpoint acts as a proxy for the Software Heritage Graph service. It provides fast access to the
+        graph representation of the Software Heritage archive. For more details please refer to the Graph
+        RPC API documentation. That endpoint is not publicly available and requires authentication and
+        special user permission in order to be able to request it.
+      tags:
+      - Miscellaneous
+      parameters:
+      - name: resolve_origins
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: extra parameter defined by that proxy enabling to resolve origin urls from their
+          sha1 representations
+        example: 'true'
+      responses:
+        '200':
+          description: no error
+        '400':
+          description: an invalid graph query has been provided
+        '404':
+          description: provided graph node cannot be found
+      x-swh-doc-route: /api/1/graph/
+  /api/1/intrinsic-metadata/origin/:
+    get:
+      operationId: api-origin-intrinsic-metadata
+      summary: Get intrinsic metadata of a software origin (as a JSON-LD/CodeMeta dictionary)
+      description: Get intrinsic metadata of a software origin (as a JSON-LD/CodeMeta dictionary).
+      tags:
+      - Metadata
+      parameters:
+      - name: origin_url
+        in: query
+        required: true
+        schema:
+          type: string
+        example: https://github.com/node-red/node-red-nodegen
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IntrinsicMetadataOrigin'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IntrinsicMetadataOrigin'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '404':
+          description: requested origin cannot be found in the archive
+      x-swh-doc-route: /api/1/intrinsic-metadata/origin/
+  /api/1/known/:
+    post:
+      operationId: api-1-known
+      summary: Check if a list of objects are present in the Software Heritage archive
+      description: Check if a list of objects are present in the Software Heritage archive. The objects
+        to check existence must be provided using SoftWare Hash IDentifiers.
+      tags:
+      - Archive
+      parameters:
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnownPost'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/KnownPost'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid SWHID was provided
+        '413':
+          description: the input array of SWHIDs is too large
+      x-swh-doc-route: /api/1/known/
+  /api/1/origin/metadata-search/:
+    get:
+      operationId: api-1-origin-metadata-search
+      summary: Search for software origins whose metadata (expressed as a JSON-LD/CodeMeta dictionary)
+        match the provided criteria
+      description: Search for software origins whose metadata (expressed as a JSON-LD/CodeMeta dictionary)
+        match the provided criteria. For now, only full-text search on this dictionary is supported.
+      tags:
+      - Metadata
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        example: '2'
+      - name: fulltext
+        in: query
+        required: true
+        schema:
+          type: string
+        example: node-red-nodegen
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OriginMetadataSearch'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OriginMetadataSearch'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+      x-swh-doc-route: /api/1/origin/metadata-search/
+  /api/1/origin/save/:
+    get:
+      operationId: api-1-save-origin
+      summary: Request the saving of a software origin into the archive or check the status of previously
+        created save requests
+      description: 'Request the saving of a software origin into the archive or check the status of previously
+        created save requests. That endpoint enables to create a saving task for a software origin through
+        a POST request. Depending of the provided origin url, the save request can either be: * immediately
+        accepted, for well known code hosting providers like for instance GitHub or GitLab * rejected,
+        in case the url is blocked by Software Heritage * put in pending state until a manual check is
+        done in order to determine if it can be loaded or not Once a saving request has been accepted,
+        its associated saving task status can then be checked through a GET request on the same url. Returned
+        status can either be: * not created: no saving task has been created * pending: saving task has
+        been created and will be scheduled for execution * scheduled: the task execution has been scheduled
+        * running: the task is currently executed * succeeded: the saving task has been successfully executed
+        * failed: the saving task has been executed but it failed When issuing a POST request an object
+        will be returned while a GET request will return an array of objects (as multiple save requests
+        might have been submitted for the same origin). It is also possible to get info about a specific
+        save request by sending a GET request to the /api/1/origin/save/(request_id)/ endpoint. If the
+        origin URL contains special characters like a white space or a question mark (meaning the URL
+        has query parameters), you should rather pass the percent encoded origin_url and visit_type values
+        through query parameters instead of URL arguments.'
+      tags:
+      - Request archival
+      parameters:
+      - name: visit_type
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - archives
+          - bzr
+          - cvs
+          - git
+          - hg
+          - svn
+          - tarball
+      - name: origin_url
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginSave'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginSave'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid visit type or origin url has been provided
+        '403':
+          description: the provided origin url is blocked
+        '404':
+          description: no save requests have been found for a given origin
+      x-swh-doc-route: /api/1/origin/save/
+    post:
+      operationId: api-1-save-origin-post
+      summary: Request the saving of a software origin into the archive or check the status of previously
+        created save requests
+      description: 'Request the saving of a software origin into the archive or check the status of previously
+        created save requests. That endpoint enables to create a saving task for a software origin through
+        a POST request. Depending of the provided origin url, the save request can either be: * immediately
+        accepted, for well known code hosting providers like for instance GitHub or GitLab * rejected,
+        in case the url is blocked by Software Heritage * put in pending state until a manual check is
+        done in order to determine if it can be loaded or not Once a saving request has been accepted,
+        its associated saving task status can then be checked through a GET request on the same url. Returned
+        status can either be: * not created: no saving task has been created * pending: saving task has
+        been created and will be scheduled for execution * scheduled: the task execution has been scheduled
+        * running: the task is currently executed * succeeded: the saving task has been successfully executed
+        * failed: the saving task has been executed but it failed When issuing a POST request an object
+        will be returned while a GET request will return an array of objects (as multiple save requests
+        might have been submitted for the same origin). It is also possible to get info about a specific
+        save request by sending a GET request to the /api/1/origin/save/(request_id)/ endpoint. If the
+        origin URL contains special characters like a white space or a question mark (meaning the URL
+        has query parameters), you should rather pass the percent encoded origin_url and visit_type values
+        through query parameters instead of URL arguments.'
+      tags:
+      - Request archival
+      parameters:
+      - name: visit_type
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - archives
+          - bzr
+          - cvs
+          - git
+          - hg
+          - svn
+          - tarball
+      - name: origin_url
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginSave'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginSave'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid visit type or origin url has been provided
+        '403':
+          description: the provided origin url is blocked
+        '404':
+          description: no save requests have been found for a given origin
+      x-swh-doc-route: /api/1/origin/save/
+  /api/1/origin/save/bulk/:
+    post:
+      operationId: api-1-save-origin-bulk
+      summary: Request the saving of multiple software origins into the archive
+      description: 'Request the saving of multiple software origins into the archive. That endpoint enables
+        to request the archival of multiple software origins through a POST request containing a list
+        of origin URLs and their visit types in its body. The following visit types are supported: bzr,
+        cvs, hg, git, svn and tarball-directory. The origins list data can be provided using the following
+        content types: * text/csv (default) When using CSV format, first column must contain origin URLs
+        and second column the visit types. html <pre><code class="">"https://git.example.org/user/project","git"
+        "https://download.example.org/project/source.tar.gz","tarball-directory"</code></pre> To post
+        the content of such file to the endpoint, you can use the following curl command. html <pre><code
+        class="shell">$ curl -X POST -H "Authorization: Bearer ****" \ -H "Content-Type: text/csv" \ --data-binary
+        @/path/to/origins.csv \ https://archive.softwareheritage.org/api/1/origin/save/bulk/</code></pre>
+        * application/json When using JSON format, the following schema must be used. html <pre><code
+        class="json">[ { "origin_url": "https://git.example.org/user/project", "visit_type": "git" },
+        { "origin_url": "https://download.example.org/project/source.tar.gz", "visit_type": "tarball-directory"
+        } ]</code></pre> To post the content of such file to the endpoint, you can use the following curl
+        command. html <pre><code class="shell">$ curl -X POST -H "Authorization: Bearer ****" \ -H "Content-Type:
+        application/json" \ --data-binary @/path/to/origins.json \ https://archive.softwareheritage.org/api/1/origin/save/bulk/</code></pre>
+        * application/yaml When using YAML format, the following schema must be used. html <pre><code
+        class="yaml">- origin_url: https://git.example.org/user/project visit_type: git - origin_url:
+        https://download.example.org/project/source.tar.gz visit_type: tarball-directory</code></pre>
+        To post the content of such file to the endpoint, you can use the following curl command. html
+        <pre><code class="shell">$ curl -X POST -H "Authorization: Bearer ****" \ -H "Content-Type: application/yaml"
+        \ --data-binary @/path/to/origins.yaml \ https://archive.softwareheritage.org/api/1/origin/save/bulk/</code></pre>
+        Once received, origins data are checked for correctness by validating URLs and verifying if visit
+        types are supported. A request cannot be accepted if at least one origin is not valid. All origins
+        with invalid format will be reported in the rejected request response. That endpoint is not publicly
+        available and requires authentication and special user permission in order to request it.'
+      tags:
+      - Request archival
+      parameters:
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the content type of posted data, either text/csv (default), application/json or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginSaveBulkPost'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginSaveBulkPost'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: provided origins data are not valid
+        '401':
+          description: request is not authenticated
+        '403':
+          description: user does not have permission to query the endpoint
+        '415':
+          description: payload format is not supported
+      x-swh-doc-route: /api/1/origin/save/bulk/
+  /api/1/origin/save/bulk/request/{request_id}/:
+    get:
+      operationId: api-1-save-origin-bulk-request-info
+      summary: Get feedback about loading statuses of origins submitted through a save bulk request
+      description: Get feedback about loading statuses of origins submitted through a save bulk request.
+        That endpoint enables to track the archival statuses of origins sumitted through a POST request
+        using the /api/1/origin/save/bulk/ endpoint. Info about submitted origins are returned in a paginated
+        way. Only origin visits whose dates are greater than the request date are reported by that endpoint.
+        That endpoint is not publicly available and requires authentication and special user permission
+        in order to request it. Staff users are also allowed to query it. Only the user that created a
+        save bulk request or a staff user can get feedback about it.
+      tags:
+      - Request archival
+      parameters:
+      - name: request_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: UUID identifier of a save bulk request
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The submitted origins info page number to retrieve
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of submitted origins info per page, default to 1000, maximum is 10000
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OriginSaveBulkRequest'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OriginSaveBulkRequest'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+            Link:
+              schema:
+                type: string
+              description: indicates that a subsequent result page is available and contains the url pointing
+                to it
+        '401':
+          description: request is not authenticated
+        '403':
+          description: user does not have permission to query the endpoint or get feedback about a request
+            he did not submit
+      x-swh-doc-route: /api/1/origin/save/bulk/request/
+  /api/1/origin/save/bulk/requests/:
+    get:
+      operationId: api-1-save-origin-bulk-requests
+      summary: List previously submitted save bulk requests
+      description: List previously submitted save bulk requests. That endpoint enables to list the save
+        bulk requests submitted by your user account and get their info URLs (see /api/1/origin/save/bulk/request/).
+        That list is returned in a paginated way if the number or requests is large. That endpoint is
+        not publicly available and requires authentication and special user permission in order to request
+        it.
+      tags:
+      - Request archival
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The submitted requests page number to retrieve
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Number of submitted requests per page, default to 1000, maximum is 10000
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OriginSaveBulkRequests'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OriginSaveBulkRequests'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+            Link:
+              schema:
+                type: string
+              description: indicates that a subsequent result page is available and contains the url pointing
+                to it
+        '401':
+          description: request is not authenticated
+        '403':
+          description: user does not have permission to query the endpoint
+      x-swh-doc-route: /api/1/origin/save/bulk/requests/
+  /api/1/origin/save/webhook/bitbucket/:
+    post:
+      operationId: api-1-origin-save-webhook-bitbucket
+      summary: Webhook receiver for Bitbucket to request or update the archival of a repository when new
+        commits are pushed to it
+      description: Webhook receiver for Bitbucket to request or update the archival of a repository when
+        new commits are pushed to it. To add such webhook to one of your git repository hosted on Bitbucket,
+        please follow Bitbucket's webhooks guide. The expected content type for the webhook payload must
+        be application/json. Please note that to avoid abusing the archival service offered by Software
+        Heritage at most one request per hour is created so the effective loading of the repository into
+        the archive might be delayed.
+      tags:
+      - Request archival
+      parameters: []
+      responses:
+        '200':
+          description: save request for repository has been successfully created from the webhook payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginSaveWebhookBitbucketPost'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginSaveWebhookBitbucketPost'
+        '400':
+          description: no save request has been created due to invalid POST request or missing data in
+            webhook payload
+      x-swh-doc-route: /api/1/origin/save/webhook/bitbucket/
+  /api/1/origin/save/webhook/forgejo/:
+    post:
+      operationId: api-1-origin-save-webhook-forgejo
+      summary: Webhook receiver for Forgejo to request or update the archival of a repository when new
+        commits are pushed to it
+      description: Webhook receiver for Forgejo to request or update the archival of a repository when
+        new commits are pushed to it. To add such webhook to one of your git repository hosted on Forgejo,
+        please follow Forgejo's webhooks guide. The expected content type for the webhook payload must
+        be application/json. Please note that to avoid abusing the archival service offered by Software
+        Heritage at most one request per hour is created so the effective loading of the repository into
+        the archive might be delayed.
+      tags:
+      - Request archival
+      parameters: []
+      responses:
+        '200':
+          description: save request for repository has been successfully created from the webhook payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginSaveWebhookBitbucketPost'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginSaveWebhookBitbucketPost'
+        '400':
+          description: no save request has been created due to invalid POST request or missing data in
+            webhook payload
+      x-swh-doc-route: /api/1/origin/save/webhook/forgejo/
+  /api/1/origin/save/webhook/gitea/:
+    post:
+      operationId: api-1-origin-save-webhook-gitea
+      summary: Webhook receiver for Gitea to request or update the archival of a repository when new commits
+        are pushed to it
+      description: Webhook receiver for Gitea to request or update the archival of a repository when new
+        commits are pushed to it. To add such webhook to one of your git repository hosted on Gitea, please
+        follow Gitea's webhooks guide. The expected content type for the webhook payload must be application/json.
+        Please note that to avoid abusing the archival service offered by Software Heritage at most one
+        request per hour is created so the effective loading of the repository into the archive might
+        be delayed.
+      tags:
+      - Request archival
+      parameters: []
+      responses:
+        '200':
+          description: save request for repository has been successfully created from the webhook payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginSaveWebhookBitbucketPost'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginSaveWebhookBitbucketPost'
+        '400':
+          description: no save request has been created due to invalid POST request or missing data in
+            webhook payload
+      x-swh-doc-route: /api/1/origin/save/webhook/gitea/
+  /api/1/origin/save/webhook/github/:
+    post:
+      operationId: api-1-origin-save-webhook-github
+      summary: Webhook receiver for GitHub to request or update the archival of a repository when new
+        commits are pushed to it
+      description: Webhook receiver for GitHub to request or update the archival of a repository when
+        new commits are pushed to it. To add such webhook to one of your git repository hosted on GitHub,
+        please follow GitHub's webhooks guide. The expected content type for the webhook payload must
+        be application/json. Please note that to avoid abusing the archival service offered by Software
+        Heritage at most one request per hour is created so the effective loading of the repository into
+        the archive might be delayed.
+      tags:
+      - Request archival
+      parameters: []
+      responses:
+        '200':
+          description: save request for repository has been successfully created from the webhook payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginSaveWebhookBitbucketPost'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginSaveWebhookBitbucketPost'
+        '400':
+          description: no save request has been created due to invalid POST request or missing data in
+            webhook payload
+      x-swh-doc-route: /api/1/origin/save/webhook/github/
+  /api/1/origin/save/webhook/gitlab/:
+    post:
+      operationId: api-1-origin-save-webhook-gitlab
+      summary: Webhook receiver for GitLab to request or update the archival of a repository when new
+        commits are pushed to it
+      description: Webhook receiver for GitLab to request or update the archival of a repository when
+        new commits are pushed to it. To add such webhook to one of your git repository hosted on GitLab,
+        please follow GitLab's webhooks guide. The expected content type for the webhook payload must
+        be application/json. Please note that to avoid abusing the archival service offered by Software
+        Heritage at most one request per hour is created so the effective loading of the repository into
+        the archive might be delayed.
+      tags:
+      - Request archival
+      parameters: []
+      responses:
+        '200':
+          description: save request for repository has been successfully created from the webhook payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginSaveWebhookBitbucketPost'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginSaveWebhookBitbucketPost'
+        '400':
+          description: no save request has been created due to invalid POST request or missing data in
+            webhook payload
+      x-swh-doc-route: /api/1/origin/save/webhook/gitlab/
+  /api/1/origin/save/webhook/gogs/:
+    post:
+      operationId: api-1-origin-save-webhook-gogs
+      summary: Webhook receiver for Gogs to request or update the archival of a repository when new commits
+        are pushed to it
+      description: Webhook receiver for Gogs to request or update the archival of a repository when new
+        commits are pushed to it. To add such webhook to one of your git repository hosted on Gogs, please
+        follow Gogs's webhooks guide. The expected content type for the webhook payload must be application/json.
+        Please note that to avoid abusing the archival service offered by Software Heritage at most one
+        request per hour is created so the effective loading of the repository into the archive might
+        be delayed.
+      tags:
+      - Request archival
+      parameters: []
+      responses:
+        '200':
+          description: save request for repository has been successfully created from the webhook payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginSaveWebhookBitbucketPost'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginSaveWebhookBitbucketPost'
+        '400':
+          description: no save request has been created due to invalid POST request or missing data in
+            webhook payload
+      x-swh-doc-route: /api/1/origin/save/webhook/gogs/
+  /api/1/origin/save/webhook/sourceforge/:
+    post:
+      operationId: api-1-origin-save-webhook-sourceforge
+      summary: Webhook receiver for SourceForge to request or update the archival of a repository when
+        new commits are pushed to it
+      description: Webhook receiver for SourceForge to request or update the archival of a repository
+        when new commits are pushed to it. To add such webhook to one of your git, hg or svn repository
+        hosted on SourceForge, please follow SourceForge's webhooks guide. The expected content type for
+        the webhook payload must be application/json. Please note that to avoid abusing the archival service
+        offered by Software Heritage at most one request per hour is created so the effective loading
+        of the repository into the archive might be delayed.
+      tags:
+      - Request archival
+      parameters: []
+      responses:
+        '200':
+          description: save request for repository has been successfully created from the webhook payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginSaveWebhookBitbucketPost'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginSaveWebhookBitbucketPost'
+        '400':
+          description: no save request has been created due to invalid POST request or missing data in
+            webhook payload
+      x-swh-doc-route: /api/1/origin/save/webhook/sourceforge/
+  /api/1/origin/save/{request_id}/:
+    get:
+      operationId: api-1-save-origin-request-id
+      summary: Request the saving of a software origin into the archive or check the status of previously
+        created save requests
+      description: 'Request the saving of a software origin into the archive or check the status of previously
+        created save requests. That endpoint enables to create a saving task for a software origin through
+        a POST request. Depending of the provided origin url, the save request can either be: * immediately
+        accepted, for well known code hosting providers like for instance GitHub or GitLab * rejected,
+        in case the url is blocked by Software Heritage * put in pending state until a manual check is
+        done in order to determine if it can be loaded or not Once a saving request has been accepted,
+        its associated saving task status can then be checked through a GET request on the same url. Returned
+        status can either be: * not created: no saving task has been created * pending: saving task has
+        been created and will be scheduled for execution * scheduled: the task execution has been scheduled
+        * running: the task is currently executed * succeeded: the saving task has been successfully executed
+        * failed: the saving task has been executed but it failed When issuing a POST request an object
+        will be returned while a GET request will return an array of objects (as multiple save requests
+        might have been submitted for the same origin). It is also possible to get info about a specific
+        save request by sending a GET request to the /api/1/origin/save/(request_id)/ endpoint. If the
+        origin URL contains special characters like a white space or a question mark (meaning the URL
+        has query parameters), you should rather pass the percent encoded origin_url and visit_type values
+        through query parameters instead of URL arguments.'
+      tags:
+      - Request archival
+      parameters:
+      - name: request_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9]+'
+        description: a save request identifier
+      - name: visit_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: the type of visit to perform (currently the supported types are bzr, cvs, git, hg,
+          svn, and tarball)
+      - name: origin_url
+        in: query
+        required: false
+        schema:
+          type: string
+        description: the url of the origin to save
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginSave'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginSave'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid visit type or origin url has been provided
+        '403':
+          description: the provided origin url is blocked
+        '404':
+          description: no save requests have been found for a given origin
+      x-swh-doc-route: /api/1/origin/save/
+  /api/1/origin/save/{visit_type}/url/{origin_url}/:
+    get:
+      operationId: api-1-save-origin-visit-type-origin-url
+      summary: Request the saving of a software origin into the archive or check the status of previously
+        created save requests
+      description: 'Request the saving of a software origin into the archive or check the status of previously
+        created save requests. That endpoint enables to create a saving task for a software origin through
+        a POST request. Depending of the provided origin url, the save request can either be: * immediately
+        accepted, for well known code hosting providers like for instance GitHub or GitLab * rejected,
+        in case the url is blocked by Software Heritage * put in pending state until a manual check is
+        done in order to determine if it can be loaded or not Once a saving request has been accepted,
+        its associated saving task status can then be checked through a GET request on the same url. Returned
+        status can either be: * not created: no saving task has been created * pending: saving task has
+        been created and will be scheduled for execution * scheduled: the task execution has been scheduled
+        * running: the task is currently executed * succeeded: the saving task has been successfully executed
+        * failed: the saving task has been executed but it failed When issuing a POST request an object
+        will be returned while a GET request will return an array of objects (as multiple save requests
+        might have been submitted for the same origin). It is also possible to get info about a specific
+        save request by sending a GET request to the /api/1/origin/save/(request_id)/ endpoint. If the
+        origin URL contains special characters like a white space or a question mark (meaning the URL
+        has query parameters), you should rather pass the percent encoded origin_url and visit_type values
+        through query parameters instead of URL arguments.'
+      tags:
+      - Request archival
+      parameters:
+      - name: visit_type
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the type of visit to perform (currently the supported types are bzr, cvs, git, hg,
+          svn, and tarball)
+      - name: origin_url
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the url of the origin to save
+      - name: visit_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: the type of visit to perform (currently the supported types are bzr, cvs, git, hg,
+          svn, and tarball)
+      - name: origin_url
+        in: query
+        required: false
+        schema:
+          type: string
+        description: the url of the origin to save
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginSave'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginSave'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid visit type or origin url has been provided
+        '403':
+          description: the provided origin url is blocked
+        '404':
+          description: no save requests have been found for a given origin
+      x-swh-doc-route: /api/1/origin/save/
+    post:
+      operationId: api-1-save-origin-post-visit-type-origin-url
+      summary: Request the saving of a software origin into the archive or check the status of previously
+        created save requests
+      description: 'Request the saving of a software origin into the archive or check the status of previously
+        created save requests. That endpoint enables to create a saving task for a software origin through
+        a POST request. Depending of the provided origin url, the save request can either be: * immediately
+        accepted, for well known code hosting providers like for instance GitHub or GitLab * rejected,
+        in case the url is blocked by Software Heritage * put in pending state until a manual check is
+        done in order to determine if it can be loaded or not Once a saving request has been accepted,
+        its associated saving task status can then be checked through a GET request on the same url. Returned
+        status can either be: * not created: no saving task has been created * pending: saving task has
+        been created and will be scheduled for execution * scheduled: the task execution has been scheduled
+        * running: the task is currently executed * succeeded: the saving task has been successfully executed
+        * failed: the saving task has been executed but it failed When issuing a POST request an object
+        will be returned while a GET request will return an array of objects (as multiple save requests
+        might have been submitted for the same origin). It is also possible to get info about a specific
+        save request by sending a GET request to the /api/1/origin/save/(request_id)/ endpoint. If the
+        origin URL contains special characters like a white space or a question mark (meaning the URL
+        has query parameters), you should rather pass the percent encoded origin_url and visit_type values
+        through query parameters instead of URL arguments.'
+      tags:
+      - Request archival
+      parameters:
+      - name: visit_type
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the type of visit to perform (currently the supported types are bzr, cvs, git, hg,
+          svn, and tarball)
+      - name: origin_url
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the url of the origin to save
+      - name: visit_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: the type of visit to perform (currently the supported types are bzr, cvs, git, hg,
+          svn, and tarball)
+      - name: origin_url
+        in: query
+        required: false
+        schema:
+          type: string
+        description: the url of the origin to save
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginSave'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginSave'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid visit type or origin url has been provided
+        '403':
+          description: the provided origin url is blocked
+        '404':
+          description: no save requests have been found for a given origin
+      x-swh-doc-route: /api/1/origin/save/
+  /api/1/origin/search/{url_pattern}/:
+    get:
+      operationId: api-1-origin-search
+      summary: Search for software origins whose urls contain a provided string pattern
+      description: Search for software origins whose urls contain a provided string pattern. The search
+        is performed in a case insensitive way. This endpoint used to provide an offset query parameter,
+        and guarantee an order on results. This is no longer true, and only the Link header should be
+        used for paginating through results.
+      tags:
+      - Archive
+      parameters:
+      - name: url_pattern
+        in: path
+        required: true
+        schema:
+          type: string
+        description: a string pattern
+        example: python/
+      - name: use_ql
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        example: '2'
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: with_visit
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: with_content
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: visit_type
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OriginSearch'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OriginSearch'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+            Link:
+              schema:
+                type: string
+              description: indicates that a subsequent result page is available and contains the url pointing
+                to it
+            X-Total-Count:
+              schema:
+                type: string
+              description: the total number of origins whose URL contains the provided string pattern
+      x-swh-doc-route: /api/1/origin/search/
+  /api/1/origin/{origin_url}/get/:
+    get:
+      operationId: api-1-origin
+      summary: Get information about a software origin
+      description: Get information about a software origin.
+      tags:
+      - Archive
+      parameters:
+      - name: origin_url
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the origin url
+        example: https://github.com/python/cpython
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginGet'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginGet'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '404':
+          description: requested origin cannot be found in the archive
+      x-swh-doc-route: /api/1/origin/
+  /api/1/origin/{origin_url}/intrinsic-metadata/:
+    get:
+      operationId: api-origin-intrinsic-metadata-legacy
+      summary: This route is deprecated; use /api/1/intrinsic-metadata/origin/ instead Get intrinsic metadata
+        of a software origin (as a JSON-LD/CodeMeta dictionary)
+      description: This route is deprecated; use /api/1/intrinsic-metadata/origin/ instead Get intrinsic
+        metadata of a software origin (as a JSON-LD/CodeMeta dictionary).
+      tags:
+      - Metadata
+      parameters:
+      - name: origin_url
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: no error
+      x-swh-doc-route: /api/1/origin/intrinsic-metadata/
+      deprecated: true
+  /api/1/origin/{origin_url}/visit/latest/:
+    get:
+      operationId: api-1-origin-visit-latest
+      summary: Get information about the latest visit of a software origin
+      description: Get information about the latest visit of a software origin.
+      tags:
+      - Archive
+      parameters:
+      - name: origin_url
+        in: path
+        required: true
+        schema:
+          type: string
+        description: a software origin URL
+        example: https://github.com/hylang/hy
+      - name: require_snapshot
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: visit_type
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginVisitLatest'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginVisitLatest'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '404':
+          description: requested origin or visit cannot be found in the archive
+      x-swh-doc-route: /api/1/origin/visit/latest/
+  /api/1/origin/{origin_url}/visit/{visit_id}/:
+    get:
+      operationId: api-1-origin-visit
+      summary: Get information about a specific visit of a software origin
+      description: Get information about a specific visit of a software origin.
+      tags:
+      - Archive
+      parameters:
+      - name: origin_url
+        in: path
+        required: true
+        schema:
+          type: string
+        description: a software origin URL
+        example: https://github.com/hylang/hy
+      - name: visit_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9]+'
+        description: a visit identifier
+        example: '1'
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginVisitLatest'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/OriginVisitLatest'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '404':
+          description: requested origin or visit cannot be found in the archive
+      x-swh-doc-route: /api/1/origin/visit/
+  /api/1/origin/{origin_url}/visits/:
+    get:
+      operationId: api-1-origin-visits
+      summary: Get information about all visits of a software origin
+      description: Get information about all visits of a software origin. Visits are returned sorted in
+        descending order according to their date.
+      tags:
+      - Archive
+      parameters:
+      - name: origin_url
+        in: path
+        required: true
+        schema:
+          type: string
+        description: a software origin URL
+        example: https://github.com/hylang/hy
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: last_visit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OriginVisits'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OriginVisits'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+            Link:
+              schema:
+                type: string
+              description: indicates that a subsequent result page is available and contains the url pointing
+                to it
+        '404':
+          description: requested origin cannot be found in the archive
+      x-swh-doc-route: /api/1/origin/visits/
+  /api/1/origins/:
+    get:
+      operationId: api-1-origins
+      summary: Get list of archived software origins
+      description: Get list of archived software origins. This endpoint used to provide an origin_from
+        query parameter, and guarantee an order on results. This is no longer true, and only the Link
+        header should be used for paginating through results.
+      tags:
+      - Archive
+      parameters:
+      - name: origin_count
+        in: query
+        required: false
+        schema:
+          type: integer
+        example: '500'
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: origin_from
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OriginMetadataSearch'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OriginMetadataSearch'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+            Link:
+              schema:
+                type: string
+              description: indicates that a subsequent result page is available and contains the url pointing
+                to it
+      x-swh-doc-route: /api/1/origins/
+  /api/1/ping/:
+    get:
+      operationId: api-1-ping
+      summary: A simple endpoint used to check if the API is working
+      description: A simple endpoint used to check if the API is working.
+      tags:
+      - Miscellaneous
+      parameters: []
+      responses:
+        '200':
+          description: no error
+      x-swh-doc-route: /api/1/ping/
+  /api/1/provenance/whereare/:
+    post:
+      operationId: api-1-provenance-whereare
+      summary: Given a list of core SWHIDs return qualified SWHIDs with some provenance info
+      description: Given a list of core SWHIDs return qualified SWHIDs with some provenance info. See
+        /api/1/provenance/whereis/ documentation for more details. That endpoint is not publicly available
+        and requires authentication and special user permission in order to request it. The response is
+        a JSON array of strings containing qualified SWHIDs with provenance info.
+      tags:
+      - Provenance
+      parameters:
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: provided core SWHID is invalid
+        '401':
+          description: request is not authenticated
+        '403':
+          description: user does not have permission to query the endpoint
+      x-swh-doc-route: /api/1/provenance/whereare/
+  /api/1/provenance/whereis/{target}/:
+    get:
+      operationId: api-1-provenance-whereis
+      summary: 'Given a core SWHID return a qualified SWHID with some provenance info: * the release or
+        revision containing that content or directory * the url of the origin containing that content
+        or directory This can also be called for revision, release or snapshot to retrieve origin url
+        information if any'
+      description: 'Given a core SWHID return a qualified SWHID with some provenance info: * the release
+        or revision containing that content or directory * the url of the origin containing that content
+        or directory This can also be called for revision, release or snapshot to retrieve origin url
+        information if any. When using a revision, the anchor will be an associated release if any. The
+        quality of the result is not guaranteed whatsoever. Since the definition of "best" likely varies
+        from one usage to the next, this API will evolve in the future when this notion gets better defined.
+        That endpoint is not publicly available and requires authentication and special user permission
+        in order to request it. The response is a string containing a qualified SWHID with provenance
+        info.'
+      tags:
+      - Provenance
+      parameters:
+      - name: target
+        in: path
+        required: true
+        schema:
+          type: string
+        description: a core SWHID targeting an archived object
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: provided core SWHID is invalid
+        '401':
+          description: request is not authenticated
+        '403':
+          description: user does not have permission to query the endpoint
+      x-swh-doc-route: /api/1/provenance/whereis/
+  /api/1/raw-extrinsic-metadata/origin/{origin_url}/authorities/:
+    get:
+      operationId: api-1-raw-extrinsic-metadata-origin-authorities
+      summary: Similar to /api/1/raw-extrinsic-metadata/swhid/authorities/ but to get metadata on origins
+        instead of objects
+      description: Similar to /api/1/raw-extrinsic-metadata/swhid/authorities/ but to get metadata on
+        origins instead of objects
+      tags:
+      - Metadata
+      parameters:
+      - name: origin_url
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The URL of the origin whose metadata-providing authorities should be returned
+        example: https://github.com/rdicosmo/parmap
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RawExtrinsicMetadataOriginAuthorities'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RawExtrinsicMetadataOriginAuthorities'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+      x-swh-doc-route: /api/1/raw-extrinsic-metadata/origin/authorities/
+  /api/1/raw-extrinsic-metadata/swhid/{target}/:
+    get:
+      operationId: api-1-raw-extrinsic-metadata-swhid
+      summary: Returns raw extrinsic metadata collected on a given object
+      description: Returns raw extrinsic metadata collected on a given object.
+      tags:
+      - Metadata
+      parameters:
+      - name: target
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The core SWHID of the object whose metadata should be returned
+      - name: authority
+        in: query
+        required: true
+        schema:
+          type: string
+        example: forge https://pypi.org/
+      - name: after
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RawExtrinsicMetadataSwhid'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RawExtrinsicMetadataSwhid'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+      x-swh-doc-route: /api/1/raw-extrinsic-metadata/swhid/
+  /api/1/raw-extrinsic-metadata/swhid/{target}/authorities/:
+    get:
+      operationId: api-1-raw-extrinsic-metadata-swhid-authorities
+      summary: Returns a list of metadata authorities that provided metadata on the given target
+      description: Returns a list of metadata authorities that provided metadata on the given target.
+        They can then be used to get the raw extrinsic metadata collected on that object from each of
+        the authorities. This endpoint should only be used directly to retrieve metadata from core SWHIDs
+        (with type cnt, dir, rev, rel, and snp). For "extended" SWHIDs such as origins, /api/1/raw-extrinsic-metadata/origin/authorities/
+        should be used instead of building this URL directly.
+      tags:
+      - Metadata
+      parameters:
+      - name: target
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The core SWHID of the object whose metadata-providing authorities should be returned
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RawExtrinsicMetadataOriginAuthorities'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RawExtrinsicMetadataOriginAuthorities'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+      x-swh-doc-route: /api/1/raw-extrinsic-metadata/swhid/authorities/
+  /api/1/raw-intrinsic-metadata/citation/origin/:
+    get:
+      operationId: api-1-raw-intrinsic-citation-origin-get
+      summary: Get a software citation, given a format and a software origin
+      description: Get a software citation, given a format and a software origin. This citation will refer
+        to the latest visit snapshot version of the main branch of the software repository.
+      tags:
+      - Metadata
+      parameters:
+      - name: citation_format
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - bibtex
+          - csl
+        example: bibtex
+      - name: origin_url
+        in: query
+        required: true
+        schema:
+          type: string
+        example: https://github.com/rdicosmo/parmap
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RawIntrinsicMetadataCitationOrigin'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/RawIntrinsicMetadataCitationOrigin'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: the requested software origin is invalid
+        '404':
+          description: the requested software origin cannot be found in the archive or metadata for citation
+            is missing, or citation is empty
+      x-swh-doc-route: /api/1/raw-intrinsic-metadata/citation/origin/
+  /api/1/raw-intrinsic-metadata/citation/swhid/:
+    get:
+      operationId: api-1-raw-intrinsic-citation-swhid-get
+      summary: Get a software citation, given an object SWHID and a format
+      description: Get a software citation, given an object SWHID and a format.
+      tags:
+      - Metadata
+      parameters:
+      - name: citation_format
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - bibtex
+          - csl
+        example: bibtex
+      - name: target_swhid
+        in: query
+        required: true
+        schema:
+          type: string
+        example: swh:1:dir:2dc0f462d191524530f5612d2935851505af41dd;origin=https://github.com/rdicosmo/parmap;visit=swh:1:snp:2128ed4f25f2d7ae7c8b7950a611d69cf4429063
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RawIntrinsicMetadataCitationOrigin'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/RawIntrinsicMetadataCitationOrigin'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: the requested software origin is invalid
+        '404':
+          description: the requested software origin cannot be found in the archive or metadata for citation
+            is missing, or citation is empty
+      x-swh-doc-route: /api/1/raw-intrinsic-metadata/citation/swhid/
+  /api/1/raw/{swhid}/:
+    get:
+      operationId: api-1-raw-object
+      summary: Get the object corresponding to the SWHID in raw form
+      description: Get the object corresponding to the SWHID in raw form. This endpoint exposes the internal
+        representation (see the *_git_object functions in swh.model.git_objects), and so can be used to
+        fetch a binary blob which hashes to the same identifier.
+      tags:
+      - Archive
+      parameters:
+      - name: swhid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the object's SWHID
+      responses:
+        '200':
+          description: no error
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: application/octet-stream
+        '404':
+          description: the requested object cannot be found in the archive
+      x-swh-doc-route: /api/1/raw/
+  /api/1/release/{sha1_git}/:
+    get:
+      operationId: api-1-release
+      summary: Get information about a release in the archive
+      description: Get information about a release in the archive. Releases are identified by sha1 checksums,
+        compatible with Git tag identifiers. See swh.model.git_objects.release_git_object in our data
+        model module for details about how they are computed.
+      tags:
+      - Archive
+      parameters:
+      - name: sha1_git
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-f]+'
+        description: hexadecimal representation of the release sha1_git identifier
+        example: 208f61cc7a5dbc9879ae6e5c2f95891e270f09ef
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Release'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/Release'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid sha1_git value has been provided
+        '404':
+          description: requested release cannot be found in the archive
+      x-swh-doc-route: /api/1/release/
+  /api/1/resolve/{swhid}/:
+    get:
+      operationId: api-1-resolve-swhid
+      summary: Resolve a SoftWare Hash IDentifier (SWHID) Try to resolve a provided SoftWare Hash IDentifier
+        into an url for browsing the pointed archive object
+      description: Resolve a SoftWare Hash IDentifier (SWHID) Try to resolve a provided SoftWare Hash
+        IDentifier into an url for browsing the pointed archive object. If the provided identifier is
+        valid, the existence of the object in the archive will also be checked.
+      tags:
+      - Archive
+      parameters:
+      - name: swhid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: a SoftWare Hash IDentifier
+        example: swh:1:rev:96db9023b881d7cd9f379b0c154650d6c108e9a3;origin=https://github.com/openssl/openssl/
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resolve'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/Resolve'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid SWHID has been provided
+        '404':
+          description: the pointed object does not exist in the archive
+      x-swh-doc-route: /api/1/resolve/
+  /api/1/revision/{sha1_git}/:
+    get:
+      operationId: api-1-revision
+      summary: Get information about a revision in the archive
+      description: Get information about a revision in the archive. Revisions are identified by sha1 checksums,
+        compatible with Git commit identifiers. See swh.model.git_objects.revision_git_object in our data
+        model module for details about how they are computed.
+      tags:
+      - Archive
+      parameters:
+      - name: sha1_git
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-f]+'
+        description: hexadecimal representation of the revision sha1_git identifier
+        example: aafb16d69fd30ff58afdd69036a26047f3aebdc6
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Revision'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/Revision'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid sha1_git value has been provided
+        '404':
+          description: requested revision cannot be found in the archive
+      x-swh-doc-route: /api/1/revision/
+  /api/1/revision/{sha1_git}/directory/:
+    get:
+      operationId: api-1-revision-directory-sha1-git
+      summary: Get information about directory (entry) objects associated to revisions
+      description: Get information about directory (entry) objects associated to revisions. Each revision
+        is associated to a single "root" directory. This endpoint behaves like /api/1/directory/, but
+        operates on the root directory associated to a given revision.
+      tags:
+      - Archive
+      parameters:
+      - name: sha1_git
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-f]+'
+        description: hexadecimal representation of the revision sha1_git identifier
+        example: f1b94134a4b879bc55c3dacdb496690c8ebdc03f
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RevisionDirectory'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/RevisionDirectory'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid sha1_git value has been provided
+        '404':
+          description: requested revision cannot be found in the archive
+      x-swh-doc-route: /api/1/revision/directory/
+  /api/1/revision/{sha1_git}/directory/{dir_path}/:
+    get:
+      operationId: api-1-revision-directory-sha1-git-dir-path
+      summary: Get information about directory (entry) objects associated to revisions
+      description: Get information about directory (entry) objects associated to revisions. Each revision
+        is associated to a single "root" directory. This endpoint behaves like /api/1/directory/, but
+        operates on the root directory associated to a given revision.
+      tags:
+      - Archive
+      parameters:
+      - name: sha1_git
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-f]+'
+        description: hexadecimal representation of the revision sha1_git identifier
+      - name: dir_path
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RevisionDirectory'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/RevisionDirectory'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid sha1_git value has been provided
+        '404':
+          description: requested revision cannot be found in the archive
+      x-swh-doc-route: /api/1/revision/directory/
+  /api/1/revision/{sha1_git}/log/:
+    get:
+      operationId: api-1-revision-log
+      summary: Get a list of all revisions heading to a given one, in other words show the commit log
+      description: Get a list of all revisions heading to a given one, in other words show the commit
+        log. The revisions are returned in the breadth-first search order while visiting the revision
+        graph. The number of revisions to return is also bounded by the limit query parameter. To get
+        the full BFS traversal of the revision graph when the total number of revisions is greater than
+        1000, it is up to the client to keep track of the multiple branches of history when there's merge
+        revisions in the returned objects. In other words, identify all the continuation points that need
+        to be followed to get the full history through recursion.
+      tags:
+      - Archive
+      parameters:
+      - name: sha1_git
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-f]+'
+        description: hexadecimal representation of the revision sha1_git identifier
+        example: e1a315fa3fa734e2a6154ed7b5b9ae0eb8987aad
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Revision'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Revision'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid sha1_git value has been provided
+        '404':
+          description: head revision cannot be found in the archive
+      x-swh-doc-route: /api/1/revision/log/
+  /api/1/revision/{sha1_git}/vulnerabilities/:
+    get:
+      operationId: api-1-revision-vulnerabilities
+      summary: Get known vulnerabilities affecting the revision identified by sha1_git
+      description: Get known vulnerabilities affecting the revision identified by sha1_git.
+      tags:
+      - Metadata
+      parameters:
+      - name: sha1_git
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-f]+'
+        example: 45a9f284641a23baa142743d8a6136d4e300c465
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RevisionVulnerabilities'
+            application/yaml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RevisionVulnerabilities'
+        '400':
+          description: an invalid sha1_git value has been provided
+      x-swh-doc-route: /api/1/revision/vulnerabilities/
+  /api/1/snapshot/{snapshot_id}/:
+    get:
+      operationId: api-1-snapshot
+      summary: Get information about a snapshot in the archive
+      description: Get information about a snapshot in the archive. A snapshot is a set of named branches,
+        which are pointers to objects at any level of the Software Heritage DAG. It represents a full
+        picture of an origin at a given time. As well as pointing to other objects in the Software Heritage
+        DAG, branches can also be aliases, in which case their target is the name of another branch in
+        the same snapshot, or dangling, in which case the target is unknown. A snapshot identifier is
+        a salted sha1. See swh.model.git_objects.snapshot_git_object in our data model module for details
+        about how they are computed.
+      tags:
+      - Archive
+      parameters:
+      - name: snapshot_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-f]+'
+        description: a snapshot identifier
+        example: 6a3a2cf0b2b90ce7ae1cf0a221ed68035b686f5a
+      - name: branches_from
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: branches_count
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: target_types
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+            Link:
+              schema:
+                type: string
+              description: indicates that a subsequent result page is available and contains the url pointing
+                to it
+        '400':
+          description: an invalid snapshot identifier or invalid query parameters has been provided
+        '404':
+          description: requested snapshot cannot be found in the archive
+      x-swh-doc-route: /api/1/snapshot/
+  /api/1/stat/counters/:
+    get:
+      operationId: api-1-stat-counters
+      summary: Get statistics about the content of the archive
+      description: Get statistics about the content of the archive.
+      tags:
+      - Miscellaneous
+      parameters:
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatCounters'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/StatCounters'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+      x-swh-doc-route: /api/1/stat/counters/
+  /api/1/vault/directory/{dir_id}/:
+    get:
+      operationId: api-1-vault-cook-directory-dir-id
+      summary: This endpoint was replaced by /api/1/vault/flat/
+      description: This endpoint was replaced by /api/1/vault/flat/
+      tags:
+      - Batch download
+      parameters:
+      - name: dir_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-f]+'
+      responses:
+        '200':
+          description: no error
+      x-swh-doc-route: /api/1/vault/directory/
+      deprecated: true
+    post:
+      operationId: api-1-vault-cook-directory-post-dir-id
+      summary: This endpoint was replaced by /api/1/vault/flat/
+      description: This endpoint was replaced by /api/1/vault/flat/
+      tags:
+      - Batch download
+      parameters:
+      - name: dir_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-f]+'
+      responses:
+        '200':
+          description: no error
+      x-swh-doc-route: /api/1/vault/directory/
+      deprecated: true
+  /api/1/vault/flat/{swhid}/:
+    get:
+      operationId: api-1-vault-cook-flat-swhid
+      summary: Request the cooking of a simple archive, typically for a directory
+      description: 'Request the cooking of a simple archive, typically for a directory. That endpoint
+        enables to create a vault cooking task for a directory through a POST request or check the status
+        of a previously created one through a GET request. Once the cooking task has been executed, the
+        resulting archive can be downloaded using the dedicated endpoint /api/1/vault/flat/raw/: :: $
+        curl -LOJ https://archive.softwareheritage.org/api/1/vault/flat/swh:1:dir:*/raw/ Then to extract
+        the cooked directory in the current one, use: :: $ tar xvf path/to/swh_1_*.tar.gz (replace swh:1:dir:*
+        with the SWHID of the requested directory).'
+      tags:
+      - Batch download
+      parameters:
+      - name: swhid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the object's SWHID
+      - name: email
+        in: query
+        required: false
+        schema:
+          type: string
+        description: e-mail to notify when the archive is ready
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultFlat'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/VaultFlat'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid directory identifier has been provided
+        '404':
+          description: requested directory did not receive any cooking request yet (in case of GET) or
+            cannot be found in the archive (in case of POST)
+      x-swh-doc-route: /api/1/vault/flat/
+    post:
+      operationId: api-1-vault-cook-flat-post-swhid
+      summary: Request the cooking of a simple archive, typically for a directory
+      description: 'Request the cooking of a simple archive, typically for a directory. That endpoint
+        enables to create a vault cooking task for a directory through a POST request or check the status
+        of a previously created one through a GET request. Once the cooking task has been executed, the
+        resulting archive can be downloaded using the dedicated endpoint /api/1/vault/flat/raw/: :: $
+        curl -LOJ https://archive.softwareheritage.org/api/1/vault/flat/swh:1:dir:*/raw/ Then to extract
+        the cooked directory in the current one, use: :: $ tar xvf path/to/swh_1_*.tar.gz (replace swh:1:dir:*
+        with the SWHID of the requested directory).'
+      tags:
+      - Batch download
+      parameters:
+      - name: swhid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the object's SWHID
+      - name: email
+        in: query
+        required: false
+        schema:
+          type: string
+        description: e-mail to notify when the archive is ready
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultFlat'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/VaultFlat'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '400':
+          description: an invalid directory identifier has been provided
+        '404':
+          description: requested directory did not receive any cooking request yet (in case of GET) or
+            cannot be found in the archive (in case of POST)
+      x-swh-doc-route: /api/1/vault/flat/
+  /api/1/vault/flat/{swhid}/raw/:
+    get:
+      operationId: api-1-vault-download-flat
+      summary: Fetch the cooked archive for a flat bundle
+      description: Fetch the cooked archive for a flat bundle. See /api/1/vault/flat/ to get more details
+        on 'flat' bundle cooking.
+      tags:
+      - Batch download
+      parameters:
+      - name: swhid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the SWHID of the object to cook
+      responses:
+        '200':
+          description: no error
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: application/gzip
+        '404':
+          description: requested directory did not receive any cooking request yet (in case of GET) or
+            cannot be found in the archive (in case of POST)
+      x-swh-doc-route: /api/1/vault/flat/raw/
+  /api/1/vault/git-bare/{swhid}/:
+    get:
+      operationId: api-1-vault-cook-git-bare-swhid
+      summary: Request the cooking of a git-bare archive or check its cooking status
+      description: 'Request the cooking of a git-bare archive or check its cooking status. That endpoint
+        enables to create a git-bare archive cooking task for a: * revision: produced repository only
+        includes a single branch heading to the revision * release: produced repository only includes
+        a single branch heading to the release * snapshot: produced repository includes all branches and
+        releases contained in the snapshot * directory: produced repository only includes a single branch
+        with a single commit targeting the directory A cooking task must be created through a POST request
+        while checking the status of a previously created one can be done through a GET request. Once
+        the cooking task has been executed, the resulting git-bare archive can be downloaded using the
+        dedicated endpoint /api/1/vault/git-bare/raw/: :: $ curl -LOJ https://archive.softwareheritage.org/api/1/vault/git-bare/swh:1:*/raw/
+        Then to import the repository in the current directory, use: :: $ tar -xf path/to/swh_1_*.git.tar
+        $ git clone swh:1:*.git new_repository (replace swh:1:* with the SWHID of the requested revision
+        or snapshot). This will create a directory called new_repository, which is a git repository containing
+        the requested objects.'
+      tags:
+      - Batch download
+      parameters:
+      - name: swhid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the revision's or snapshot's permanent identifier
+      - name: email
+        in: query
+        required: false
+        schema:
+          type: string
+        description: e-mail to notify when the git-bare archive is ready
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultGitBare'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/VaultGitBare'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '404':
+          description: requested directory did not receive any cooking request yet (in case of GET) or
+            cannot be found in the archive (in case of POST)
+      x-swh-doc-route: /api/1/vault/git-bare/
+    post:
+      operationId: api-1-vault-cook-git-bare-post-swhid
+      summary: Request the cooking of a git-bare archive or check its cooking status
+      description: 'Request the cooking of a git-bare archive or check its cooking status. That endpoint
+        enables to create a git-bare archive cooking task for a: * revision: produced repository only
+        includes a single branch heading to the revision * release: produced repository only includes
+        a single branch heading to the release * snapshot: produced repository includes all branches and
+        releases contained in the snapshot * directory: produced repository only includes a single branch
+        with a single commit targeting the directory A cooking task must be created through a POST request
+        while checking the status of a previously created one can be done through a GET request. Once
+        the cooking task has been executed, the resulting git-bare archive can be downloaded using the
+        dedicated endpoint /api/1/vault/git-bare/raw/: :: $ curl -LOJ https://archive.softwareheritage.org/api/1/vault/git-bare/swh:1:*/raw/
+        Then to import the repository in the current directory, use: :: $ tar -xf path/to/swh_1_*.git.tar
+        $ git clone swh:1:*.git new_repository (replace swh:1:* with the SWHID of the requested revision
+        or snapshot). This will create a directory called new_repository, which is a git repository containing
+        the requested objects.'
+      tags:
+      - Batch download
+      parameters:
+      - name: swhid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the revision's or snapshot's permanent identifier
+      - name: email
+        in: query
+        required: false
+        schema:
+          type: string
+        description: e-mail to notify when the git-bare archive is ready
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultGitBare'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/VaultGitBare'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '404':
+          description: requested directory did not receive any cooking request yet (in case of GET) or
+            cannot be found in the archive (in case of POST)
+      x-swh-doc-route: /api/1/vault/git-bare/
+  /api/1/vault/git-bare/{swhid}/raw/:
+    get:
+      operationId: api-1-vault-download-git-bare
+      summary: Fetch the cooked git-bare archive for a revision
+      description: Fetch the cooked git-bare archive for a revision. See /api/1/vault/git-bare/ to get
+        more details on git-bare cooking.
+      tags:
+      - Batch download
+      parameters:
+      - name: swhid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the revision's permanent identifier
+      responses:
+        '200':
+          description: no error
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: application/x-tar
+        '404':
+          description: requested directory did not receive any cooking request yet (in case of GET) or
+            cannot be found in the archive (in case of POST)
+      x-swh-doc-route: /api/1/vault/git-bare/raw/
+  /api/1/vault/gitfast/{swhid}/:
+    get:
+      operationId: api-1-vault-cook-gitfast-swhid
+      summary: Request the cooking of a gitfast archive for a revision or check its cooking status
+      description: 'Request the cooking of a gitfast archive for a revision or check its cooking status.
+        That endpoint enables to create a vault cooking task for a revision through a POST request or
+        check the status of a previously created one through a GET request. Once the cooking task has
+        been executed, the resulting gitfast archive can be downloaded using the dedicated endpoint /api/1/vault/gitfast/raw/:
+        :: $ curl -LOJ https://archive.softwareheritage.org/api/1/vault/gitfast/swh:1:rev:*/raw/ Then
+        to import the revision in the current directory, use: :: $ git init $ zcat path/to/swh_1_rev_*.gitfast.gz
+        | git fast-import $ git checkout HEAD (replace swh:1:rev:* with the SWHID of the requested revision).'
+      tags:
+      - Batch download
+      parameters:
+      - name: swhid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the revision's permanent identifiers
+      - name: email
+        in: query
+        required: false
+        schema:
+          type: string
+        description: e-mail to notify when the gitfast archive is ready
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultGitfast'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/VaultGitfast'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '404':
+          description: requested directory did not receive any cooking request yet (in case of GET) or
+            cannot be found in the archive (in case of POST)
+      x-swh-doc-route: /api/1/vault/gitfast/
+    post:
+      operationId: api-1-vault-cook-gitfast-post-swhid
+      summary: Request the cooking of a gitfast archive for a revision or check its cooking status
+      description: 'Request the cooking of a gitfast archive for a revision or check its cooking status.
+        That endpoint enables to create a vault cooking task for a revision through a POST request or
+        check the status of a previously created one through a GET request. Once the cooking task has
+        been executed, the resulting gitfast archive can be downloaded using the dedicated endpoint /api/1/vault/gitfast/raw/:
+        :: $ curl -LOJ https://archive.softwareheritage.org/api/1/vault/gitfast/swh:1:rev:*/raw/ Then
+        to import the revision in the current directory, use: :: $ git init $ zcat path/to/swh_1_rev_*.gitfast.gz
+        | git fast-import $ git checkout HEAD (replace swh:1:rev:* with the SWHID of the requested revision).'
+      tags:
+      - Batch download
+      parameters:
+      - name: swhid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the revision's permanent identifiers
+      - name: email
+        in: query
+        required: false
+        schema:
+          type: string
+        description: e-mail to notify when the gitfast archive is ready
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+        description: the requested response content type, either application/json (default) or application/yaml
+      responses:
+        '200':
+          description: no error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultGitfast'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/VaultGitfast'
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: this depends on Accept header of request
+        '404':
+          description: requested directory did not receive any cooking request yet (in case of GET) or
+            cannot be found in the archive (in case of POST)
+      x-swh-doc-route: /api/1/vault/gitfast/
+  /api/1/vault/gitfast/{swhid}/raw/:
+    get:
+      operationId: api-1-vault-download-gitfast
+      summary: Fetch the cooked gitfast archive for a revision
+      description: Fetch the cooked gitfast archive for a revision. See /api/1/vault/gitfast/ to get more
+        details on gitfast cooking.
+      tags:
+      - Batch download
+      parameters:
+      - name: swhid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: no error
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: application/gzip
+        '404':
+          description: requested directory did not receive any cooking request yet (in case of GET) or
+            cannot be found in the archive (in case of POST)
+      x-swh-doc-route: /api/1/vault/gitfast/raw/
+  /api/1/vault/revision/{rev_id}/gitfast/:
+    get:
+      operationId: api-1-vault-cook-revision-gitfast-rev-id
+      summary: This endpoint was replaced by /api/1/vault/gitfast/
+      description: This endpoint was replaced by /api/1/vault/gitfast/
+      tags:
+      - Batch download
+      parameters:
+      - name: rev_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-f]+'
+      responses:
+        '200':
+          description: no error
+      x-swh-doc-route: /api/1/vault/revision/gitfast/
+      deprecated: true
+    post:
+      operationId: api-1-vault-cook-revision-gitfast-post-rev-id
+      summary: This endpoint was replaced by /api/1/vault/gitfast/
+      description: This endpoint was replaced by /api/1/vault/gitfast/
+      tags:
+      - Batch download
+      parameters:
+      - name: rev_id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9a-f]+'
+      responses:
+        '200':
+          description: no error
+      x-swh-doc-route: /api/1/vault/revision/gitfast/
+      deprecated: true

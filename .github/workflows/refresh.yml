@@ -1,0 +1,58 @@
+name: refresh
+
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  swh-web:
+    name: Regenerate against the latest swh.web
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Find the latest swh.web release
+        id: version
+        run: |
+          latest=$(curl -fsSL https://pypi.org/pypi/swh.web/json | jq -r .info.version)
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+
+      - name: Regenerate
+        env:
+          SWH_WEB_VERSION: ${{ steps.version.outputs.latest }}
+        run: |
+          make image SWH_WEB_VERSION="$SWH_WEB_VERSION"
+          make spec SWH_WEB_VERSION="$SWH_WEB_VERSION"
+          make validate SWH_WEB_VERSION="$SWH_WEB_VERSION"
+
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          branch: refresh/swh-web-${{ steps.version.outputs.latest }}
+          title: Regenerate against swh.web ${{ steps.version.outputs.latest }}
+          body: |
+            Generated from swh.web ${{ steps.version.outputs.latest }}.
+
+            Review `openapi.gen.yaml` for changes upstream made to the endpoint
+            documentation, and check whether any `overlay.yaml` action now
+            matches nothing.
+          commit-message: Regenerate against swh.web ${{ steps.version.outputs.latest }}
+
+  drift:
+    name: Compare against the live endpoint index
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: make image
+      - run: make drift
