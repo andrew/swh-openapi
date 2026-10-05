@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Software Heritage Web API
-  version: 2026.09.29
+  version: 2026.10.05
   x-swh-web-version: 0.17.12
   description: Unofficial OpenAPI description of the Software Heritage Web API, generated from swh-web's
     own endpoint documentation.
